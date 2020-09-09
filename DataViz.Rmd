@@ -5,24 +5,149 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(httr)
+library(knitr)
+library(plyr)
+library(ggridges)
+library(streamgraph)
+library(gt)
+library(purrr)
+library(tibble)
+library(forcats)
+library(lubridate)
+library(googlesheets4)
+library(infer)
+library(gt)
+library(htmlwidgets)
+library(skimr)
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(tidyr)
+library(forcats)
+library(plotly)
+library(devtools)
+library(tidyverse)
+
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r loading data}
+# Reading in the data
+initial_data <- read.csv("Data_Econ_index.csv", na.strings=c("","NA"))
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#removing top two rows
+initial_data = initial_data[-c(1,2),]
 
-```{r cars}
-summary(cars)
+initial_data$primary.location <- str_replace_all(initial_data$primary.location, "Yerevan", "Yerevan, Armenia")
+initial_data$primary.location <- str_replace_all(initial_data$primary.location, "Yerevan, Armenia, Armenia", "Yerevan, Armenia")
+initial_data$funding <- str_replace_all(initial_data$funding, "N/A", "Unknown")
+initial_data$X..of.founders <- str_replace_all(initial_data$X..of.founders, " N/A", "Unknown")
+initial_data$X..of.founders <- str_replace_all(initial_data$X..of.founders, "N/A", "Unknown")
+initial_data$X..of.founders <- str_replace_all(initial_data$X..of.founders, "4\\(\\?\\)", "4")
+
+
+
+# Changing the missing data to unknown
+data_unknowns <- initial_data %>%
+  mutate(primary.location = fct_explicit_na(initial_data$primary.location, na_level = "Unknown")) %>%
+  mutate(accelerator.incubator = fct_explicit_na(initial_data$accelerator.incubator, na_level = "Unknown")) %>%
+  mutate(current.stage = fct_explicit_na(initial_data$current.stage, na_level = "Unknown")) %>%
+  mutate(funding = fct_explicit_na(initial_data$funding, na_level = "Unknown")) %>%
+  mutate(date.published = fct_explicit_na(initial_data$date.published, na_level = "Unknown")) %>%
+  mutate(X..of.founders = fct_explicit_na(initial_data$X..of.founders, na_level = "Unknown")) %>%
+  select (-c(date.range.for.government.support))
+
+yearExtract <- function(string) {
+  t <- regmatches(string, regexec("[0-9]{4}", string))
+  sapply(t, function(x) {
+    if(length(x) > 0){
+      return(as.numeric(x))
+    } else {
+      return(NA)    
+    }
+  })
+}
+
+# Changing date published data to be only in years format
+
+data_unknowns$date.published <- yearExtract(as.character(data_unknowns$date.published))
+
+yrs <- data_unknowns$date.published
+yr <- as.Date(as.character(yrs), format = "%Y")
+data_unknowns$date.published <- year(yr)
+
+
+# Changing NAs to be Unknown
+data_unknowns$date.published[is.na(data_unknowns$date.published)] <- 'Unknown'
+
+
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r trying plotly}
+
+plot_ly(data_unknowns, x = ~primary.location)
+
+plot_ly(data_unknowns, y = ~primary.location, x = ~current.stage,colors = "Accent")
+
+plot_ly(
+  data_unknowns, 
+  x = ~current.stage, 
+  color = I("red"), 
+  stroke = I("black"), 
+  span = I(2))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r ggplotly thingy1}
+library(dplyr)
+library(babynames)
+library(streamgraph)
+
+babynames %>%
+  filter(grepl("^Kr", name)) %>%
+  group_by(year, name) %>%
+  tally(wt=n) %>%
+  streamgraph("name", "n", "year")
+
+```
+
+```{r random}
+
+
+data_unknowns2 <- transform(data_unknowns, count = table(date.published)[date.published])
+
+
+
+piapa <- data_unknowns2 %>%
+ group_by(interaction(current.stage, date.published)) %>% 
+  summarise(count = n())
+
+walk <- data_unknowns2 %>%
+  filter(current.stage != "Unknown") %>%
+  group_by(interaction(current.stage, date.published))
+
+walk2 <- transform(walk, count = table(interaction(current.stage, date.published))[interaction(current.stage, date.published)])
+
+
+walk2 <- distinct(walk2, count.Var1, .keep_all = TRUE)
+
+walk2 %>%
+  streamgraph("current.stage", "count.Freq.1", "date.published") %>%
+  sg_legend(show=TRUE, label="Phase of Startup")%>%
+  sg_axis_x(1, "year", "%Y")
+  
+
+
+```
+
+
+
+
+
+
+
+
