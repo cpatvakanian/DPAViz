@@ -116,6 +116,9 @@ babynames %>%
 ```
 
 ```{r random}
+library(dplyr)
+library(streamgraph)
+library(pbapply)
 
 
 data_unknowns2 <- transform(data_unknowns, count = table(date.published)[date.published])
@@ -127,7 +130,7 @@ piapa <- data_unknowns2 %>%
   summarise(count = n())
 
 walk <- data_unknowns2 %>%
-  filter(current.stage != "Unknown") %>%
+  filter(date.published != "Unknown") %>%
   group_by(interaction(current.stage, date.published))
 
 walk2 <- transform(walk, count = table(interaction(current.stage, date.published))[interaction(current.stage, date.published)])
@@ -137,10 +140,13 @@ walk2 <- distinct(walk2, count.Var1, .keep_all = TRUE)
 
 walk2 %>%
   streamgraph("current.stage", "count.Freq.1", "date.published") %>%
+    sg_fill_manual(c("#ffa500", "blue", "purple", "red", "#00ff00", "red")) %>%
   sg_legend(show=TRUE, label="Phase of Startup")%>%
-  sg_axis_x(1, "year", "%Y")
-  
+  sg_axis_x(1, "year", "%Y") %>%
+  sg_title(title = "Phases of Startups in Armenia 2016-2020") %>%
+  sg_annotate(label="Vermont", x=as.Date("2016-04-01"), y=0.6, color="purple")
 
+  
 
 ```
 
