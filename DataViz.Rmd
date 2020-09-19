@@ -112,8 +112,7 @@ walk2 %>%
     sg_fill_manual(c("#ffa500", "blue", "purple", "red", "#00ff00", "red")) %>%
   sg_legend(show=TRUE, label="Phase of Startup")%>%
   sg_axis_x(1, "year", "%Y") %>%
-  sg_title(title = "Phases of Startups in Armenia 2016-2020") %>%
-  sg_annotate(label="Vermont", x=as.Date("2016-04-01"), y=0.6, color="purple")
+  sg_title(title = "Phases of Startups in Armenia 2016-2020")
 
   
 
@@ -295,32 +294,32 @@ table(data_unknowns2$funding)
 
 
 ###########
-
-# Armenia Startup Academy
-one_cofounder_Start_Acad <- data_unknowns2 %>%
-  filter(X..of.founders == 1) %>%
-  filter(accelerator.incubator == "Armenia Startup Academy")
-
-two_cofounder_Start_Acad <- data_unknowns2 %>%
-  filter(X..of.founders == 2) %>%
-  filter(accelerator.incubator == "Armenia Startup Academy")
-
-three_cofounder_Start_Acad <- data_unknowns2 %>%
-  filter(X..of.founders == 3) %>%
-  filter(accelerator.incubator == "Armenia Startup Academy")
-
-four_cofounder_Start_Acad <- data_unknowns2 %>%
-  filter(X..of.founders == 4) %>%
-  filter(accelerator.incubator == "Armenia Startup Academy")
-
-five_up_cofounder_Start_Acad <- data_unknowns2 %>%
-  filter(X..of.founders == 5 | X..of.founders > 5) %>%
-  filter(accelerator.incubator == "Armenia Startup Academy")
-
-unknown_cofounder_Start_Acad <- data_unknowns2 %>%
-  filter(X..of.founders == "Unknown") %>%
-  filter(accelerator.incubator == "Armenia Startup Academy")
-
+# 
+# # Armenia Startup Academy
+# one_cofounder_Start_Acad <- data_unknowns2 %>%
+#   filter(X..of.founders == 1) %>%
+#   filter(accelerator.incubator == "Armenia Startup Academy")
+# 
+# two_cofounder_Start_Acad <- data_unknowns2 %>%
+#   filter(X..of.founders == 2) %>%
+#   filter(accelerator.incubator == "Armenia Startup Academy")
+# 
+# three_cofounder_Start_Acad <- data_unknowns2 %>%
+#   filter(X..of.founders == 3) %>%
+#   filter(accelerator.incubator == "Armenia Startup Academy")
+# 
+# four_cofounder_Start_Acad <- data_unknowns2 %>%
+#   filter(X..of.founders == 4) %>%
+#   filter(accelerator.incubator == "Armenia Startup Academy")
+# 
+# five_up_cofounder_Start_Acad <- data_unknowns2 %>%
+#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
+#   filter(accelerator.incubator == "Armenia Startup Academy")
+# 
+# unknown_cofounder_Start_Acad <- data_unknowns2 %>%
+#   filter(X..of.founders == "Unknown") %>%
+#   filter(accelerator.incubator == "Armenia Startup Academy")
+# 
 
 
 fig <- plot_ly(
@@ -329,7 +328,7 @@ fig <- plot_ly(
 
     node = list(
       label = c("Armenia Startup Academy", "AUA Epic","STEP EIF","Hero House AI", "Unknown Incubator/Accelerator","1 Cofounder","2 Cofounders","3 Cofounders","4 Cofounders", "5 + Cofounders", "Unknown Cofounders"),
-      color = c("red", "red","red","red","red","orange","violet","pink","green","light green","blue"),
+      color = c("red", "red","red","red","red","dodgerblue","cornflowerblue","blue","mediumblue","midnightblue","skyblue"),
       pad = 15,
       thickness = 20,
       line = list(
