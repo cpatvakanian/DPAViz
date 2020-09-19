@@ -121,45 +121,10 @@ walk2 %>%
 
 
 
-```{r Sankey}
-
-#data_unknowns2
-
-fig <- plot_ly(
-    type = "sankey",
-    orientation = "h",
-
-    node = list(
-      label = c("Armenia Startup Academy", "AUA EPIC", "Hero House AI Incubator", "STEP EIF", "Unknown"),
-      color = c("blue", "blue", "blue", "blue", "blue", "blue"),
-      pad = 15,
-      thickness = 20,
-      line = list(
-        color = "black",
-        width = 0.5
-      )
-    ),
-
-    link = list(
-      source = c(0,1,2,3,4,5),
-      target = c(1,2,3,4,4,5),
-      value =  c(8,4,2,8,4,2)
-    )
-  )
-fig <- fig %>% layout(
-    title = "Basic Sankey Diagram",
-    font = list(
-      size = 10
-    )
-)
-
-fig
-
-table(data_unknowns2$funding)
-```
 
 
-```{r blahhhhh}
+
+```{r Sankey Graph}
 # AUA Epic
 # one_cofounder_AUAepic <- data_unknowns2 %>%
 #   filter(X..of.founders == 1) %>%
