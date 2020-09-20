@@ -90,6 +90,7 @@ data_unknowns$date.published[is.na(data_unknowns$date.published)] <- 'Unknown'
 
 
 
+
 ```{r Making Streamgraph}
 
 # Making the date as a counted observation in my df
@@ -129,22 +130,23 @@ walk2 %>%
 # one_cofounder_AUAepic <- data_unknowns2 %>%
 #   filter(X..of.founders == 1) %>%
 #   filter(accelerator.incubator == "AUA EPIC")
-# 
+
 # two_cofounder_AUAepic <- data_unknowns2 %>%
 #   filter(X..of.founders == 2) %>%
 #   filter(accelerator.incubator == "AUA EPIC")
-# 
+
 # three_cofounder_AUAepic <- data_unknowns2 %>%
 #   filter(X..of.founders == 3) %>%
 #   filter(accelerator.incubator == "AUA EPIC")
-# 
+
 # four_cofounder_AUAepic <- data_unknowns2 %>%
 #   filter(X..of.founders == 4) %>%
 #   filter(accelerator.incubator == "AUA EPIC")
 # 
-# five_up_cofounder_AUAepic <- data_unknowns2 %>%
-#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
-#   filter(accelerator.incubator == "AUA EPIC")
+# five_up_cofounder_STEP <- data_unknowns2 %>%
+#  filter(accelerator.incubator == "AUA EPIC") %>%
+#  filter(X..of.founders == 5 | X..of.founders == 6)
+
 # 
 # unknown_cofounder_AUAepic <- data_unknowns2 %>%
 #   filter(X..of.founders == "Unknown") %>%
@@ -170,7 +172,7 @@ walk2 %>%
 #   filter(accelerator.incubator == "STEP EIF")
 # 
 # five_up_cofounder_STEP <- data_unknowns2 %>%
-#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
+#   filter(X..of.founders == 5 | X..of.founders == 6) %>%
 #   filter(accelerator.incubator == "STEP EIF")
 # 
 # unknown_cofounder_STEP <- data_unknowns2 %>%
@@ -196,7 +198,7 @@ walk2 %>%
 #   filter(accelerator.incubator == "Hero House AI Incubator")
 # 
 # five_up_cofounder_House <- data_unknowns2 %>%
-#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
+#   filter(X..of.founders == 5 | X..of.founders == 6) %>%
 #   filter(accelerator.incubator == "Hero House AI Incubator")
 # 
 # unknown_cofounder_House <- data_unknowns2 %>%
@@ -223,9 +225,9 @@ walk2 %>%
 #   filter(accelerator.incubator == "Hero House AI Incubator")
 # 
 # five_up_cofounder_House <- data_unknowns2 %>%
-#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
+#   filter(X..of.founders == 5 | X..of.founders == 6) %>%
 #   filter(accelerator.incubator == "Hero House AI Incubator")
-# 
+
 # unknown_cofounder_House <- data_unknowns2 %>%
 #   filter(X..of.founders == "Unknown") %>%
 #   filter(accelerator.incubator == "Hero House AI Incubator")
@@ -250,7 +252,7 @@ walk2 %>%
 #   filter(accelerator.incubator == "Unknown")
 # 
 # five_up_cofounder_unknown <- data_unknowns2 %>%
-#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
+#   filter(X..of.founders == 5 | X..of.founders == 6) %>%
 #   filter(accelerator.incubator == "Unknown")
 # 
 # unknown_cofounder_unknown <- data_unknowns2 %>%
@@ -278,7 +280,7 @@ walk2 %>%
 #   filter(accelerator.incubator == "Armenia Startup Academy")
 # 
 # five_up_cofounder_Start_Acad <- data_unknowns2 %>%
-#   filter(X..of.founders == 5 | X..of.founders > 5) %>%
+#   filter(X..of.founders == 5 | X..of.founders == 6) %>%
 #   filter(accelerator.incubator == "Armenia Startup Academy")
 # 
 # unknown_cofounder_Start_Acad <- data_unknowns2 %>%
@@ -287,12 +289,12 @@ walk2 %>%
 # 
 
 
-fig <- plot_ly(
+sankey_startups <- plot_ly(
     type = "sankey",
     orientation = "h",
 
     node = list(
-      label = c("Armenia Startup Academy", "AUA Epic","STEP EIF","Hero House AI", "Unknown Incubator/Accelerator","1 Cofounder","2 Cofounders","3 Cofounders","4 Cofounders", "5 + Cofounders", "Unknown Cofounders"),
+      label = c("Armenia Startup Academy", "AUA Epic","STEP EIF","Hero House AI", "Unknown Incubator/Accelerator","1 Founder","2 Cofounders","3 Cofounders","4 Cofounders", "5 + Cofounders", "Unknown Cofounders"),
       color = c("red", "red","red","red","red","dodgerblue","cornflowerblue","blue","mediumblue","midnightblue","skyblue"),
       pad = 15,
       thickness = 20,
@@ -305,17 +307,18 @@ fig <- plot_ly(
     link = list(
       source = c(1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,0,0,0,0,0,0),
       target = c(5,6,7,8,9,10,5,6,7,8,9,10,5,6,7,8,9,10,5,6,7,8,9,10,5,6,7,8,9,10),
-      value =  c(10,8,10,9,10,9,10,6,0,0,0,29,0,0,0,0,0,7,2,6,4,3,0,3,0,0,0,0,0,65)
+      value =  c(1,8,10,9,6,12,10,6,0,0,0,29,0,0,0,0,0,7,2,6,4,3,0,3,0,0,0,0,0,65)
     )
   )
-fig <- fig %>% layout(
+
+sankey_startups <- sankey_startups %>% layout(
     title = "Number of Cofounders Based on Incubator",
     font = list(
       size = 10
     )
 )
 
-fig
+sankey_startups
 ```
 
 
